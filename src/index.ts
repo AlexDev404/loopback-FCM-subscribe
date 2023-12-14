@@ -1,15 +1,16 @@
 import {ApplicationConfig, UbLoopbackApplication} from './application';
+import {syncDatabase} from './database/db';
 export * from './application';
 
 export async function main(options: ApplicationConfig = {}) {
   const app = new UbLoopbackApplication(options);
   await app.boot();
   await app.start();
+  // Connect to the database
+  await syncDatabase();
 
   const url = app.restServer.url;
   console.log(`Server is running at ${url}`);
-  console.log(`Try ${url}/ping`);
-
   return app;
 }
 

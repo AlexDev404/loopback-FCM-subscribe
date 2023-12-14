@@ -15,4 +15,11 @@ export class Message extends Entity {
     required: true,
   })
   content: string;
+
+  // 'content' property -- notification content
+  @property({
+    type: "string",
+    required: true,
+  })
+  topic: string;
 }

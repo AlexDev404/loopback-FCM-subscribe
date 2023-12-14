@@ -65,3 +65,4 @@ typings/
 
 # Emacs auto-save file
 \#*#
+src/database/database.sqlite
