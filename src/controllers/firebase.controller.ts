@@ -97,25 +97,32 @@ export class FirebaseController {
 
   async sendMessage(message: Message): Promise<void> {
     // Define the message payload
-    const payload = {
+    let payload = {
       notification: {
         title: message.title,
         body: message.content,
       },
-      topic: message.topic,
+      topic: message.topic ?? null,
     };
-    // Find if the topic already exists
-    const existingTopic = await Topics.findOne({
-      where: {name: message.topic},
-    });
 
-    if (!existingTopic) {
-      console.log(`Topic ${message.topic} does not exist.`);
-      return;
+    if (message.token) {
+      payload.token = message.token;
     }
 
+    let existingTopic; // Topic to find (if message.topic is provided)
+    if (message.topic) {
+      // Find if the topic already exists
+      existingTopic = await Topics.findOne({
+        where: {name: message.topic},
+      });
+
+      if (!existingTopic) {
+        console.log(`Topic ${message.topic} does not exist.`);
+        return;
+      }
+    }
     await Messages.create({
-      userGroup: existingTopic?.id, // ID of the user group
+      userGroup: existingTopic ? existingTopic?.id : message.token, // ID of the user group
       title: message.title,
       content: message.content,
     });
@@ -127,7 +134,9 @@ export class FirebaseController {
         // Response is a message ID string.
         console.log(
           '\n-- Successfully sent message --',
-          `\n${message.title}: Topic: '${payload.topic}'\n==========\n${message.content}`,
+          `\n${message.title}: Topic: '${
+            payload.topic ?? payload.token
+          }'\n==========\n${message.content}`,
           '\n' + response,
           '\n-- cut here --',
         );
