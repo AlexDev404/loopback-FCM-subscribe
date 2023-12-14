@@ -1,4 +1,4 @@
-import {post, response, Request, requestBody, RestBindings} from "@loopback/rest";
+import {post, Request, requestBody, RestBindings} from "@loopback/rest";
 import {inject} from '@loopback/core';
 import {Message} from "../models/message.model";
 import {Subscribe} from "../models/subscribe.model";
